@@ -1,5 +1,5 @@
-/* eslint-disable prefer-arrow-callback */
 /* eslint-disable prettier/prettier */
+/* eslint-disable prefer-arrow-callback */
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 //const validator = require('validator');
