@@ -72,14 +72,14 @@ exports.protect = catchAsync(async (req, res, next) => {
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   // 3) Check if user still exists
-  const freshUser = await User.findById(decoded.id);
-  if (!freshUser) {
+  const currentUser = await User.findById(decoded.id);
+  if (!currentUser) {
     return next(
       new AppError('The user belonging to the token does not exists', 401)
     );
   }
   // 4) Check if user changed the password after token was issued
-  if (await freshUser.changedPasswordAfter(decoded.iat)) {
+  if (await currentUser.changedPasswordAfter(decoded.iat)) {
     return next(
       new AppError(
         'User recently changed the password! Please log in again',
@@ -87,8 +87,19 @@ exports.protect = catchAsync(async (req, res, next) => {
       )
     );
   }
-
   //Grant access to protected route
-  req.user = freshUser;
+  req.user = currentUser;
   next();
 });
+
+exports.restrictTo = (...roles) => {
+  return (req, res, next) => {
+    //Roles is an array ['admin', 'lead-guide']
+    if (!roles.includes(req.user.role)) {
+      return next(
+        new AppError('Your are not authorized to perform this action', 403)
+      );
+    }
+    next();
+  };
+};
