@@ -13,7 +13,7 @@ exports.aliasTopTours = (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (req, res, next) => { 
+exports.getAllTours = catchAsync(async (req, res, next) => {
   // EXECUTE QUERY
   const features = new APIFeature(Tour.find(), req.query)
     .filter()
@@ -43,8 +43,8 @@ exports.getTour = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     data: {
-      tour
-    }
+      tour,
+    },
   });
 });
 
@@ -65,7 +65,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
     runValidators: true,
   });
 
-  if(!tour){
+  if (!tour) {
     return next(new AppError('No tour found with that ID', 404));
   }
 
@@ -80,7 +80,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
 exports.deleteTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndDelete(req.params.id);
 
-  if(!tour){
+  if (!tour) {
     return next(new AppError('No tour found with that ID', 404));
   }
 
